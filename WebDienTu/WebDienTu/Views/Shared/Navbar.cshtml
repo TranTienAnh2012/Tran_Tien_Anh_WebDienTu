@@ -1,0 +1,85 @@
+﻿@using Microsoft.AspNetCore.Http
+
+<nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <div class="container-fluid">
+        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">WebDienTu</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+            <!-- Menu bên trái -->
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Trang chủ</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Chính sách</a>
+                </li>
+
+                @* Menu cho ADMIN *@
+                @if (Context.Session.GetInt32("VaiTro") == 1)
+                {
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown">
+                            Quản trị
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" asp-area="Admin" asp-controller="Home" asp-action="Index">Trang Admin</a></li>
+                            <li><a class="dropdown-item" asp-area="Admin" asp-controller="AdminSanPhams" asp-action="Index">QL Sản phẩm</a></li>
+                            <li><a class="dropdown-item" asp-area="Admin" asp-controller="DonHangs" asp-action="Index">QL Đơn hàng</a></li>
+                            <li><a class="dropdown-item" asp-area="Admin" asp-controller="NguoiDungs" asp-action="Index">QL Người dùng</a></li>
+                        </ul>
+                    </li>
+                }
+
+                @* Menu cho USER *@
+                @if (Context.Session.GetInt32("VaiTro") == 0 || Context.Session.GetInt32("VaiTro") == null)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-controller="SanPhams" asp-action="Index">Sản phẩm</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-controller="DonHangs" asp-action="LichSu">Lịch sử</a>
+                    </li>
+                }
+            </ul>
+
+            <!-- Menu bên phải -->
+            <ul class="navbar-nav ms-auto">
+                @* Giỏ hàng (USER) *@
+                @if (Context.Session.GetInt32("VaiTro") == 0 || Context.Session.GetInt32("VaiTro") == null)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link position-relative" asp-controller="GioHang" asp-action="Index">
+                            🛒 Giỏ hàng
+                            <span class="badge bg-danger">
+                                @Context.Session.GetInt32("SoLuongGioHang") ?? 0
+                            </span>
+                        </a>
+                    </li>
+                }
+
+                @* Hiển thị tên và logout *@
+                @if (!string.IsNullOrEmpty(Context.Session.GetString("Email")))
+                {
+                    <li class="nav-item">
+                        <span class="nav-link text-success">
+                            Xin chào, @Context.Session.GetString("HoTen")
+                        </span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" asp-controller="Account" asp-action="Logout">Đăng xuất</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item">
+                        <a class="nav-link text-primary" asp-controller="Account" asp-action="Login">Đăng nhập</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</nav>
